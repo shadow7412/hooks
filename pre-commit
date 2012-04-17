@@ -19,10 +19,16 @@ for i in $(git diff-index --name-only --cached HEAD)
 		extension=${filename##*.}
 		filename=${filename%.*}
 		case "$extension" in
-			php) 
-				#run lint
+			php) #PHP
 				output=$($php -d display_errors=1 -l $i 2>/dev/null)
 				if [ "$output" != "No syntax errors detected in $i" ]; then
+					echo $output
+					errors=$((errors+1))
+				fi
+			;;
+			rb)# RUBY
+				output=$(ruby -c $i)
+				if [ "$output" != "Syntax OK" ]; then
 					echo $output
 					errors=$((errors+1))
 				fi
