@@ -13,7 +13,7 @@ for i in $(git diff-index --name-only --cached HEAD)
 			echo "$i is a gunk file. Add it to .gitignore"
 			continue;
 		fi
-		
+
 		#break up the file for the extention
 		filename=$(basename $i)
 		extension=${filename##*.}
@@ -27,8 +27,8 @@ for i in $(git diff-index --name-only --cached HEAD)
 				fi
 			;;
 			rb)# RUBY
-				output=$(ruby -c $i)
-				if [ "$output" != "Syntax OK" ]; then
+				output=$(ruby -c $i 2>&1)
+				if [ $? -ne 0 ]; then
 					echo $output
 					errors=$((errors+1))
 				fi
