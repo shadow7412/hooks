@@ -34,8 +34,7 @@ for i in $(git diff-index --name-only --cached HEAD)
 					errors=$((errors+1))
 				fi
 			;;
-			*)
-				#ignore file
+			*) #ignore file
 				ignored=$((ignored+1))
 		esac
 	done
