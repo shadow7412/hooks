@@ -1,0 +1,33 @@
+#!/bin/bash
+php="C:\wamp\bin\php\php5.3.9\php.exe"
+count=0
+files=0
+ignored=0
+for i in $(git diff-index --name-only --cached HEAD)
+	do
+		files=$((files+1))
+		filename=$(basename $i)
+		extension=${filename##*.}
+		filename=${filename%.*}
+		case "$extension" in
+			php) 
+				#run lint
+				output=$($php -d display_errors=1 -l $i 2>/dev/null)
+				if [ "$output" != "No syntax errors detected in $i" ]; then
+					echo $output
+					count=$((count+1))
+				fi
+			;;
+			*)
+				#ignore file
+				ignored=$((ignored+1))
+		esac
+	done
+echo ""
+echo "Files checked:" $files "| Errors found:" $count "| Files ignored:" $ignored
+
+if [ $count = 0 ]; then
+	exit 0
+else
+	exit 1
+fi
