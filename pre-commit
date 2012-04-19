@@ -25,6 +25,7 @@ for i in $(git diff-index --name-only --cached HEAD)
 					echo '$i has unbalanced braces.'
 					errors=$((errors+1))
 				fi
+			;;
 			php) #PHP
 				output=$(php -d display_errors=1 -l $i 2>/dev/null)
 				if [ "$output" != "No syntax errors detected in $i" ]; then
