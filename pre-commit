@@ -20,6 +20,11 @@ for i in $(git diff-index --name-only --cached HEAD)
 		extension=${filename##*.}
 		filename=${filename%.*}
 		case "$extension" in
+			css)
+				if [ $(awk '{c+=gsub(s,s)}END{print c}' s='{' $i) != $(awk '{c+=gsub(s,s)}END{print c}' s='}' $i) ]; then
+					echo '$i has unbalanced braces.'
+					errors=$((errors+1))
+				fi
 			php) #PHP
 				output=$(php -d display_errors=1 -l $i 2>/dev/null)
 				if [ "$output" != "No syntax errors detected in $i" ]; then
