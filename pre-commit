@@ -33,6 +33,13 @@ for i in $(git diff-index --name-only --cached HEAD)
 					errors=$((errors+1))
 				fi
 			;;
+#			pl)
+#				output=$(perl -Mstrict -Mdiagnostics -cw)
+#				if [ "$output" != "- syntax OK" ]; then
+#					echo $output
+#					errors=$((errors+1))
+#				fi
+#			;;
 			rb)# RUBY
 				output=$(ruby -c $i 2>&1)
 				if [ $? -ne 0 ]; then
