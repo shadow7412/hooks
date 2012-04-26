@@ -15,12 +15,20 @@ for i in $(git diff-index --name-only --cached HEAD)
 			continue;
 		fi
 
+		#check file for /*FIX*/ - these are marks for code that shouldn't be commited.
+		output=$(grep -in "/\*FIX\*/" $i)
+		if [ $output ]; then
+			echo $i contains FIX marks:
+			echo $output
+			errors=$((errors+1))
+		fi
+		
 		#break up the file for the extention
 		filename=$(basename $i)
 		extension=${filename##*.}
 		filename=${filename%.*}
 		case "$extension" in
-			css)
+			css) #Cascading style sheets.
 				if [ $(awk '{c+=gsub(s,s)}END{print c}' s='{' $i) != $(awk '{c+=gsub(s,s)}END{print c}' s='}' $i) ]; then
 					echo '$i has unbalanced braces.'
 					errors=$((errors+1))
@@ -33,7 +41,7 @@ for i in $(git diff-index --name-only --cached HEAD)
 					errors=$((errors+1))
 				fi
 			;;
-#			pl)
+#			pl) #Perl
 #				output=$(perl -Mstrict -Mdiagnostics -cw)
 #				if [ "$output" != "- syntax OK" ]; then
 #					echo $output
