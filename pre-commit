@@ -6,6 +6,10 @@ files=0
 ignored=0
 for i in $(git diff-index --name-only --cached HEAD)
 	do
+		echo $i
+		if [ ! -f $i ]; then #if file doesn't exist, it was probably flagged for deletion.
+			continue
+		fi
 		files=$((files+1))
 		result=$(echo $i | perl -ne "/(Thumbs\.db|\.DS_Store|\._.*)$/ && print")
 		if [ -n "$result" ]; then #string wasn't empty - so we don't want this file.
